@@ -1,0 +1,27 @@
+{
+  "name": "voron-trident-r2-interactive-manual",
+  "version": "0.1.0",
+  "description": "Interactive 3D assembly manual for the VORON Trident R2, built from the official STEP. Independent community project, not affiliated with VORON Design.",
+  "scripts": {
+    "setup": "uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python cadquery-ocp==8.0.1.1.0",
+    "fetch-cad": "sh tools/fetch-cad.sh",
+    "step": ".venv/bin/python tools/step/convert_ocp.py source/trident_assembly.step build/assembly.json 0.2 0.5",
+    "build:hardware": "node --max-old-space-size=8192 tools/simplify-hardware.cjs",
+    "build:data": "node --max-old-space-size=8192 tools/build-data.cjs",
+    "build:page": "node tools/build-page.cjs",
+    "build": "npm run build:hardware && npm run build:data && npm run build:page",
+    "build:all": "npm run step && npm run build",
+    "serve": "python3 -m http.server 8766 --directory dist"
+  },
+  "author": "Mairis Skuja (Iconic FAB)",
+  "license": "GPL-3.0-only",
+  "homepage": "https://iconic-fab.com/voron/trident/r2/",
+  "repository": {"type": "git", "url": "https://github.com/mairisskuja/voron-trident-r2-interactive-manual.git"},
+  "bugs": "https://github.com/mairisskuja/voron-trident-r2-interactive-manual/issues",
+  "type": "commonjs",
+  "private": true,
+  "devDependencies": {
+    "meshoptimizer": "1.2.0",
+    "mp4-muxer": "5.2.2"
+  }
+}
