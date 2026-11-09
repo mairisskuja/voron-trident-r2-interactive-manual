@@ -30,6 +30,7 @@ The Stealthburner manual itself is not transcribed.
 | — | CW2 has two cable covers (`Cable_Cover`, `Cable_Cover_For_PCB`) and two chain anchors (`Chain_Anchor_3_Hole_V2_Trident`, `_2_Hole_`) in the same place | Plain cover and 3-hole anchor drawn (matches the 3-hole cable bridge of p.139); the others left out |
 | Mounting not described in the Trident manual | In the CAD the toolhead sits on the front of the X carriage, on the 2 M3x12 SHCS set 3 mm proud on p.146 | Step text says so and refers to the Stealthburner manual |
 | No accelerometer in the Trident manual | ADXL mount on the toolhead | Drawn as part of the toolhead, labelled as CAD content |
+| p.189 links only to the official Stealthburner manual | — | A second tip, not from the manual, links to the interactive Stealthburner manual (https://iconic-fab.com/voron/stealthburner/r2/), which follows the current Clockwork 2.5; the official link stays first |
 
 ## Not drawn
 
