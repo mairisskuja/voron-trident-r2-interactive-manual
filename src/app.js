@@ -408,6 +408,9 @@ function freeRect() {
   r.y = top.bottom + 8; r.h = H - r.y;
   if (card.width && card.left < 40 && card.width < W * 0.6) { r.x = card.right + 8; r.w = W - r.x; }
   else if (card.height) { r.h = card.top - r.y - 8; }
+  // The navigation bar along the bottom.
+  const nav = $('navbar').getBoundingClientRect();
+  if (nav.height) r.h = Math.min(r.h, nav.top - 8 - r.y);
   // Keep the drawing clear of the corner logo.
   const logo = $('logo-corner').getBoundingClientRect();
   if (logo.width) r.h = Math.min(r.h, logo.top - 12 - r.y);
@@ -629,6 +632,7 @@ function renderStepCard() {
   const n = stepIndex + 1, total = steps.length;
   $('step-count').textContent = `Step ${String(n).padStart(2, '0')} of ${total}`;
   $('dock-label').textContent = `Step ${n} of ${total} · ${s.title}`;
+  $('nav-count').textContent = `${n} / ${total}`;
   $('step-section').textContent = s.section;
   $('step-title').textContent = s.title;
   const fin = $('step-finale');
@@ -661,6 +665,9 @@ function renderStepCard() {
   }
   sel.selectedIndex = chapters.indexOf(s.chapter);
   $('ticks').innerHTML = steps.map((st, i) => st.chapter !== s.chapter ? '' : `<button type="button" class="tick${i === stepIndex ? ' on' : ''}${i < stepIndex ? ' done' : ''}${i && st.section !== steps[i - 1].section ? ' chapter-start' : ''}" data-i="${i}" title="${escapeHtml(st.section + ': ' + st.title)}" aria-label="Step ${i + 1}: ${escapeHtml(st.section)}">${i + 1}</button>`).join('');
+  // Keep the current step's button in view in the sideways-scrolling row.
+  const tk = $('ticks'), on = tk.querySelector('.on');
+  if (on) { const l = on.offsetLeft - tk.offsetLeft, w = tk.clientWidth; if (l < tk.scrollLeft + 8 || l + on.offsetWidth > tk.scrollLeft + w - 8) tk.scrollLeft = l - (w - on.offsetWidth) / 2; }
   try { history.replaceState(null, '', '#' + s.id); } catch {}
   updateScrub();
 }
@@ -1021,6 +1028,12 @@ function reframe() {
 const scheduleReframe = () => { clearTimeout(reframeTimer); reframeTimer = setTimeout(reframe, 120); };
 new ResizeObserver(() => { resize(); scheduleReframe(); }).observe(canvas);
 new ResizeObserver(scheduleReframe).observe($('dock'));
+// The card and the corner logo sit above the bar: they follow its height.
+new ResizeObserver(() => {
+  const h = $('navbar').offsetHeight;
+  if (h) document.documentElement.style.setProperty('--nav-h', h + 'px');
+  scheduleReframe();
+}).observe($('navbar'));
 let lastT = performance.now();
 function loop(now) {
   const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;

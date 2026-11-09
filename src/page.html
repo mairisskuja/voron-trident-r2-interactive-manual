@@ -73,7 +73,7 @@ button { cursor: pointer; }
 .voron-logo { height: 22px; width: auto; }
 .voron-logo img { width: auto; height: 100%; }
 .unofficial { font: 700 10px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 999px; padding: 2px 8px; white-space: nowrap; align-self: center; }
-.author { position: fixed; z-index: 3; right: max(20px, env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+.author { position: fixed; z-index: 3; right: max(20px, env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px) + var(--nav-h) + var(--gut));
   display: flex; align-items: center; gap: 8px; color: var(--ink-soft); font-size: 12px; text-decoration: none; line-height: 1.25; text-align: right; }
 .author img { width: 40px; height: 40px; flex: none; }
 .author:hover b { color: var(--accent); }
@@ -94,7 +94,10 @@ button { cursor: pointer; }
 .zoom output { font: 500 12px var(--mono); min-width: 46px; text-align: center; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
 
 /* Step card */
-#dock { position: fixed; z-index: 4; left: max(16px, env(safe-area-inset-left, 0px)); top: calc(64px + env(safe-area-inset-top, 0px)); max-height: calc(100% - 80px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); width: 368px;
+/* The card holds the text; the navigation is its own bar at the bottom (#navbar), so Back and
+   Next never move whatever the text's length. --nav-h is the bar's height, set by app.js. */
+:root { --nav-h: 96px; --gut: 16px; }
+#dock { position: fixed; z-index: 4; left: max(var(--gut), env(safe-area-inset-left, 0px)); top: calc(64px + env(safe-area-inset-top, 0px)); max-height: calc(100% - 64px - var(--nav-h) - 2 * var(--gut) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); width: 368px;
   background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
 .dock-head { padding: 12px 14px 0; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 #dock-label { display: none; }
@@ -139,8 +142,17 @@ button { cursor: pointer; }
 .callout b { font: 700 11px var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .callout.warn { border-left: 3px solid var(--warn); padding-left: 10px; }
 .callout.check b { color: var(--new-ink); }
-.transport { border-top: 1px solid var(--rule); padding: 10px 14px 12px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
-.trow { display: flex; align-items: center; gap: 6px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#navbar { position: fixed; z-index: 5; left: max(var(--gut), env(safe-area-inset-left, 0px)); right: max(var(--gut), env(safe-area-inset-right, 0px)); bottom: calc(var(--gut) + env(safe-area-inset-bottom, 0px));
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; box-shadow: var(--shadow); padding: 8px 10px; display: grid; gap: 8px; }
+body[data-mode="explore"] #navbar { display: none; }
+body[data-mode="explore"] .author { bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+.nav-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.nav-btns, .nav-tools { display: flex; gap: 6px; flex: none; }
+#nav-count { font: 600 12.5px var(--body); color: var(--ink-soft); font-variant-numeric: tabular-nums; min-width: 4.6em; text-align: center; flex: none; }
+.nav-sub { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.chapter-pick { flex: 0 0 300px; min-width: 0; display: flex; }
+.chapter-pick select { flex: 1; min-width: 0; height: 30px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); color: var(--ink); font: 600 13px var(--body); padding: 0 6px; }
 .ibtn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--rule); background: var(--panel); display: grid; place-items: center; flex: none; }
 .ibtn:disabled { opacity: .35; cursor: default; }
 .ibtn svg { width: 16px; height: 16px; }
@@ -157,10 +169,10 @@ body.hand.grabbing #view { cursor: grabbing; }
 #play .i-pause { display: none; } #play.playing .i-pause { display: block; } #play.playing .i-play { display: none; }
 input[type=range] { accent-color: var(--accent); width: 100%; min-width: 0; }
 #scrub { flex: 1; }
-.chapter-row { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
-.chapter-row select { flex: 1; min-width: 0; height: 30px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); color: var(--ink); font: 600 13px var(--body); padding: 0 6px; text-transform: none; letter-spacing: 0; }
-#ticks { display: grid; grid-template-columns: repeat(auto-fill, minmax(28px, 1fr)); gap: 4px; }
-.tick { width: 100%; height: 26px; border-radius: 6px; border: 1px solid var(--rule); background: none; font: 700 11px var(--body); color: var(--ink-soft); font-variant-numeric: tabular-nums; padding: 0; }
+/* One row of steps, scrolling sideways: the bar keeps its height whatever the number of steps. */
+#ticks { flex: 1; min-width: 0; display: flex; gap: 4px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; scroll-behavior: smooth; }
+#ticks::-webkit-scrollbar { display: none; }
+.tick { flex: 0 0 30px; height: 30px; border-radius: 6px; border: 1px solid var(--rule); background: none; font: 700 11px var(--body); color: var(--ink-soft); font-variant-numeric: tabular-nums; padding: 0; }
 .tick.chapter-start { box-shadow: inset 3px 0 0 var(--accent); }
 .tick.done { color: var(--ink); border-color: var(--ghost); }
 .tick.on { background: var(--accent); border-color: var(--accent); color: var(--panel); }
@@ -179,7 +191,8 @@ body[data-mode="explore"] #to-explore { visibility: hidden; }
 .about h4 { font-size: 13px; font-weight: 650; margin: 12px 0 6px; }
 .about ul { margin: 0 0 10px; padding-left: 18px; display: grid; gap: 4px; }
 .about a { color: var(--accent); text-underline-offset: 2px; }
-body[data-mode="explore"] .steps-body, body[data-mode="explore"] .transport { display: none; }
+body[data-mode="explore"] .steps-body { display: none; }
+body[data-mode="explore"] #dock { max-height: calc(100% - 64px - 2 * var(--gut) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
 body[data-mode="explore"] .explore-body { display: block; }
 .explore-body h2 { font-weight: 300; font-size: 26px; line-height: 1.12; text-transform: uppercase; letter-spacing: .02em; margin: 4px 0 10px; }
 .slider-row { display: flex; align-items: center; gap: 10px; margin: 14px 0; }
@@ -242,7 +255,15 @@ body[data-mode="explore"] .explore-body { display: block; }
   .unofficial { display: none; }
   .tbtn .t { display: none; }
   .tbtn { padding: 0 9px; }
-  #dock { top: auto; left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); width: auto; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); max-height: 48%; }
+  :root { --gut: 10px; }
+  /* The text sheet sits on the bar with a fixed height, so the drawing above it does not
+     reframe from step to step; long text scrolls inside it. */
+  #dock { top: auto; left: max(var(--gut), env(safe-area-inset-left, 0px)); right: max(var(--gut), env(safe-area-inset-right, 0px)); width: auto; bottom: calc(var(--nav-h) + 2 * var(--gut) - 4px + env(safe-area-inset-bottom, 0px)); height: min(32vh, 260px); max-height: none; }
+  body.dock-collapsed #dock { height: auto; }
+  body[data-mode="explore"] #dock { bottom: calc(var(--gut) + env(safe-area-inset-bottom, 0px)); height: auto; max-height: 48%; }
+  #navbar { padding: 6px 8px; gap: 6px; }
+  .nav-main { gap: 8px; }
+  .chapter-pick { flex: 0 1 46%; }
   /* On small screens the card is a bottom sheet: a header bar with the show/hide toggle, the
      text scrolling under a hairline. */
   .dock-head { padding: 4px 6px 4px 16px; border-bottom: 1px solid var(--rule); }
@@ -268,7 +289,8 @@ body[data-mode="explore"] .explore-body { display: block; }
   .zoom output, #zoom-in, #zoom-out { display: none; }
   .zoom button { width: 32px; min-width: 32px; padding: 0; }
   /* Phones: Rotate and Hand choose what one finger does; Auto makes way for them. */
-  #autoplay { display: none; }
+  #autoplay, #nav-count, #replay { display: none; }
+  .nav-btns, .nav-tools { gap: 4px; }
   #rotate { display: grid; }
   #rotate[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--panel); }
 }
@@ -333,21 +355,29 @@ body[data-mode="explore"] .explore-body { display: block; }
       </section>
     </div>
   </div>
-  <div class="transport">
-    <div class="trow">
+</aside>
+
+<nav id="navbar" aria-label="Step navigation">
+  <div class="nav-main">
+    <div class="nav-btns">
       <button type="button" class="ibtn" id="prev" aria-label="Previous step"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 3h1.6v10H4zM13 3v10L6.5 8z"/></svg></button>
       <button type="button" class="ibtn" id="play" aria-label="Play"><svg class="i-play" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.5v11L13 8z"/></svg><svg class="i-pause" viewBox="0 0 16 16" fill="currentColor"><path d="M4 3h3v10H4zM9 3h3v10H9z"/></svg></button>
-      <button type="button" class="ibtn" id="replay" aria-label="Replay step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8a5 5 0 1 0 1.5-3.6M3 2.5V5h2.5"/></svg></button>
-      <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Step animation position">
       <button type="button" class="ibtn" id="next" aria-label="Next step"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.4 3H12v10h-1.6zM3 3v10l6.5-5z"/></svg></button>
+      <button type="button" class="ibtn" id="replay" aria-label="Replay step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8a5 5 0 1 0 1.5-3.6M3 2.5V5h2.5"/></svg></button>
+    </div>
+    <output id="nav-count" aria-live="off">1 / 1</output>
+    <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Step animation position">
+    <div class="nav-tools">
       <button type="button" class="ibtn" id="rotate" aria-pressed="true" aria-label="Rotate: drag to turn the drawing" title="Rotate: drag to turn the drawing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20.2 3.8v4.6h-4.6"/><circle cx="12" cy="12" r="2.2"/></svg></button>
       <button type="button" class="ibtn" id="hand" aria-pressed="false" aria-label="Hand tool: drag to move the drawing" title="Hand tool (H): drag to move the drawing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12.5v-7a1.75 1.75 0 0 1 3.5 0V11"/><path d="M11.5 10.5V3.75a1.75 1.75 0 0 1 3.5 0v6.75"/><path d="M15 10.5v-5a1.75 1.75 0 0 1 3.5 0V11"/><path d="M18.5 9a1.75 1.75 0 0 1 3.5 0v4.5a8 8 0 0 1-8 8h-1.6c-2.4 0-4-.8-5.5-2.3l-4-4.1a1.8 1.8 0 0 1 2.6-2.5L8 15"/></svg></button>
       <button type="button" class="ibtn auto" id="autoplay" aria-pressed="false" aria-label="Autoplay every step" title="Autoplay every step (double-click for 2× speed)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 11.2A8.3 8.3 0 0 1 18.4 6.6l1.8 2"/><path d="M20.2 3.8v4.8h-4.8"/><path d="M20.2 12.8a8.3 8.3 0 0 1-14.6 4.6l-1.8-2"/><path d="M3.8 20.2v-4.8h4.8"/><path d="M10.4 9.7v4.6l3.9-2.3z" fill="currentColor" stroke-width="1"/></svg><span>Auto</span></button>
     </div>
-    <div class="chapter-row"><label for="chapter">Chapter</label><select id="chapter"></select></div>
-    <div id="ticks" role="group" aria-label="Jump to step"></div>
   </div>
-</aside>
+  <div class="nav-sub">
+    <label class="chapter-pick"><span class="sr">Chapter</span><select id="chapter" aria-label="Chapter"></select></label>
+    <div id="ticks" role="group" aria-label="Jump to step in this chapter"></div>
+  </div>
+</nav>
 
 <section class="panel" id="panel-options" hidden aria-label="Configure">
   <h2>Configure</h2>
