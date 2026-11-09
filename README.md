@@ -55,6 +55,7 @@ npm run serve       # http://localhost:8766/
 
 | Path | What it is |
 | --- | --- |
+| `CHANGELOG.md` | What changed in each release |
 | `tools/catalog.cjs` | Shared helpers and the first two chapters (Frame, A/B Drive and Idler) |
 | `tools/chapters/NN-*.cjs` | One module per later chapter: parts, steps, text, manual page references. Edit these to change the manual |
 | `docs/transcripts/` | Page-by-page transcripts of the official manual, with the "CAD vs manual" decisions per chapter |
